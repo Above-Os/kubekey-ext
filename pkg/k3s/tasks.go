@@ -48,7 +48,7 @@ type GetClusterStatus struct {
 }
 
 func (g *GetClusterStatus) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] GetClusterStatus")
+	fmt.Println("[action] GetClusterStatus(k3s)")
 	exist, err := runtime.GetRunner().FileExist("/etc/systemd/system/k3s.service")
 	if err != nil {
 		return err
@@ -93,7 +93,7 @@ type SyncKubeBinary struct {
 }
 
 func (s *SyncKubeBinary) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] SyncKubeBinary")
+	fmt.Println("[action] SyncKubeBinary(k3s)")
 	binariesMapObj, ok := s.PipelineCache.Get(common.KubeBinaries + "-" + runtime.RemoteHost().GetArch())
 	if !ok {
 		return errors.New("get KubeBinary by pipeline cache failed")
@@ -159,7 +159,7 @@ type ChmodScript struct {
 }
 
 func (c *ChmodScript) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] ChmodScript")
+	fmt.Println("[action] ChmodScript(k3s)")
 	killAllScript := filepath.Join("/usr/local/bin", templates.K3sKillallScript.Name())
 	uninstallScript := filepath.Join("/usr/local/bin", templates.K3sUninstallScript.Name())
 
@@ -383,7 +383,7 @@ type AddMasterTaint struct {
 }
 
 func (a *AddMasterTaint) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] AddMasterTaint")
+	fmt.Println("[action] AddMasterTaint(k3s)")
 	host := runtime.RemoteHost()
 
 	cmd := fmt.Sprintf(
@@ -401,7 +401,7 @@ type AddWorkerLabel struct {
 }
 
 func (a *AddWorkerLabel) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] AddWorkerLabel")
+	fmt.Println("[action] AddWorkerLabel(k3s)")
 	host := runtime.RemoteHost()
 
 	cmd := fmt.Sprintf(
@@ -422,7 +422,7 @@ type SyncKubeConfigToWorker struct {
 }
 
 func (s *SyncKubeConfigToWorker) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] SyncKubeConfigToWorker")
+	fmt.Println("[action] SyncKubeConfigToWorker(k3s)")
 	if v, ok := s.PipelineCache.Get(common.ClusterStatus); ok {
 		cluster := v.(*K3sStatus)
 
@@ -475,6 +475,7 @@ type ExecUninstallScript struct {
 }
 
 func (e *ExecUninstallScript) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ExecUninstallScript(k3s)")
 	if _, err := runtime.GetRunner().SudoCmd("systemctl daemon-reload && /usr/local/bin/k3s-killall.sh",
 		true); err != nil {
 		return errors.Wrap(errors.WithStack(err), "add master NoSchedule taint failed")
@@ -491,7 +492,7 @@ type SaveKubeConfig struct {
 }
 
 func (s *SaveKubeConfig) Execute(_ connector.Runtime) error {
-	fmt.Println("[action] SaveKubeConfig")
+	fmt.Println("[action] SaveKubeConfig(k3s)")
 	status, ok := s.PipelineCache.Get(common.ClusterStatus)
 	if !ok {
 		return errors.New("get kubernetes status failed by pipeline cache")

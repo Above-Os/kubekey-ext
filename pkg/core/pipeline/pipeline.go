@@ -76,8 +76,7 @@ func (p *Pipeline) Start() error {
 		if m.IsSkip() {
 			continue
 		}
-		logger.Log.Infof("[run module] module: %s", m.GetName())
-		fmt.Println("[pipeline run] module:", m.GetName())
+		fmt.Println("[pipeline run module] name:", m.GetName())
 		moduleCache := p.newModuleCache()
 		m.Default(p.Runtime, p.PipelineCache, moduleCache)
 		m.AutoAssert()

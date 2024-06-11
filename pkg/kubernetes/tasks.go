@@ -403,6 +403,7 @@ type AddWorkerLabel struct {
 }
 
 func (a *AddWorkerLabel) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddWorkerLabel(k8s)")
 	if _, err := runtime.GetRunner().SudoCmd(fmt.Sprintf(
 		"/usr/local/bin/kubectl label --overwrite node %s node-role.kubernetes.io/worker=",
 		runtime.RemoteHost().GetName()), true); err != nil {

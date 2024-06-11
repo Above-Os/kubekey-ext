@@ -370,6 +370,7 @@ type AddWorkerLabel struct {
 }
 
 func (a *AddWorkerLabel) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddWorkerLabel(k8e)")
 	host := runtime.RemoteHost()
 
 	cmd := fmt.Sprintf(
