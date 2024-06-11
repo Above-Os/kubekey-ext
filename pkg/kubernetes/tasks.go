@@ -417,6 +417,7 @@ type JoinNode struct {
 }
 
 func (j *JoinNode) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] JoinNode(k8s)")
 	if _, err := runtime.GetRunner().SudoCmd("/usr/local/bin/kubeadm join --config=/etc/kubernetes/kubeadm-config.yaml --ignore-preflight-errors=FileExisting-crictl,ImagePull",
 		true); err != nil {
 		resetCmd := "/usr/local/bin/kubeadm reset -f"
@@ -434,6 +435,7 @@ type SyncKubeConfigToWorker struct {
 }
 
 func (s *SyncKubeConfigToWorker) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncKubeConfigToWorker(k8s)")
 	if v, ok := s.PipelineCache.Get(common.ClusterStatus); ok {
 		cluster := v.(*KubernetesStatus)
 
@@ -480,6 +482,7 @@ type KubeadmReset struct {
 }
 
 func (k *KubeadmReset) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] KubeadmReset(k8s)")
 	resetCmd := "/usr/local/bin/kubeadm reset -f"
 	if k.KubeConf.Cluster.Kubernetes.ContainerRuntimeEndpoint != "" {
 		resetCmd = resetCmd + " --cri-socket " + k.KubeConf.Cluster.Kubernetes.ContainerRuntimeEndpoint
@@ -493,6 +496,7 @@ type FindNode struct {
 }
 
 func (f *FindNode) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] FindNode(k8s)")
 	var resArr []string
 	res, err := runtime.GetRunner().Cmd(
 		"sudo -E /usr/local/bin/kubectl get nodes | grep -v NAME | grep -v 'master\\|control-plane' | awk '{print $1}'",
@@ -536,6 +540,7 @@ type DrainNode struct {
 }
 
 func (d *DrainNode) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] DrainNode(k8s)")
 	nodeName, ok := d.PipelineCache.Get("dstNode")
 	if !ok {
 		return errors.New("get dstNode failed by pipeline cache")
@@ -553,6 +558,7 @@ type KubectlDeleteNode struct {
 }
 
 func (k *KubectlDeleteNode) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] KubectlDeleteNode(k8s)")
 	nodeName, ok := k.PipelineCache.Get("dstNode")
 	if !ok {
 		return errors.New("get dstNode failed by pipeline cache")
@@ -571,6 +577,7 @@ type SetUpgradePlan struct {
 }
 
 func (s *SetUpgradePlan) Execute(_ connector.Runtime) error {
+	fmt.Println("[action] SetUpgradePlan(k8s)")
 	currentVersion, ok := s.PipelineCache.GetMustString(common.K8sVersion)
 	if !ok {
 		return errors.New("get current Kubernetes version failed by pipeline cache")
@@ -611,6 +618,7 @@ type CalculateNextVersion struct {
 }
 
 func (c *CalculateNextVersion) Execute(_ connector.Runtime) error {
+	fmt.Println("[action] CalculateNextVersion(k8s)")
 	currentVersion, ok := c.PipelineCache.GetMustString(common.K8sVersion)
 	if !ok {
 		return errors.New("get current Kubernetes version failed by pipeline cache")
@@ -659,6 +667,7 @@ type UpgradeKubeMaster struct {
 }
 
 func (u *UpgradeKubeMaster) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] UpgradeKubeMaster(k8s)")
 	host := runtime.RemoteHost()
 	if err := KubeadmUpgradeTasks(runtime, u); err != nil {
 		return errors.Wrap(errors.WithStack(err), fmt.Sprintf("upgrade cluster using kubeadm failed: %s", host.GetName()))
@@ -685,6 +694,7 @@ type UpgradeKubeWorker struct {
 }
 
 func (u *UpgradeKubeWorker) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] UpgradeKubeWorker(k8s)")
 	host := runtime.RemoteHost()
 
 	if _, err := runtime.GetRunner().SudoCmd("/usr/local/bin/kubeadm upgrade node", true); err != nil {
@@ -750,6 +760,7 @@ type KubeadmUpgrade struct {
 }
 
 func (k *KubeadmUpgrade) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] KubeadmUpgrade(k8s)")
 	host := runtime.RemoteHost()
 	if _, err := runtime.GetRunner().SudoCmd(fmt.Sprintf(
 		"timeout -k 600s 600s /usr/local/bin/kubeadm upgrade apply %s -y "+
@@ -836,6 +847,7 @@ type ReconfigureDNS struct {
 }
 
 func (r *ReconfigureDNS) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ReconfigureDNS(k8s)")
 	patchCorednsCmd := `/usr/local/bin/kubectl patch deploy -n kube-system coredns -p \" 
 spec:
     template:
@@ -970,6 +982,7 @@ type SetCurrentK8sVersion struct {
 }
 
 func (s *SetCurrentK8sVersion) Execute(_ connector.Runtime) error {
+	fmt.Println("[action] SetCurrentK8sVersion")
 	s.PipelineCache.Set(common.K8sVersion, s.KubeConf.Cluster.Kubernetes.Version)
 	return nil
 }
@@ -979,6 +992,7 @@ type SaveKubeConfig struct {
 }
 
 func (s *SaveKubeConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SaveKubeConfig(k8s)")
 	status, ok := s.PipelineCache.Get(common.ClusterStatus)
 	if !ok {
 		return errors.New("get kubernetes status failed by pipeline cache")
@@ -1064,7 +1078,7 @@ type ConfigureKubernetes struct {
 }
 
 func (c *ConfigureKubernetes) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] ConfigureKubernetes")
+	fmt.Println("[action] ConfigureKubernetes(k8s)")
 	host := runtime.RemoteHost()
 	kubeHost := host.(*kubekeyv1alpha2.KubeHost)
 	for k, v := range kubeHost.Labels {
@@ -1083,6 +1097,7 @@ type EtcdSecurityEnhancemenAction struct {
 }
 
 func (s *EtcdSecurityEnhancemenAction) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] EtcdSecurityEnhancemenAction(k8s)")
 	chmodEtcdCertsDirCmd := "chmod 700 /etc/ssl/etcd/ssl"
 	chmodEtcdCertsCmd := "chmod 600 /etc/ssl/etcd/ssl/*"
 	chmodEtcdDataDirCmd := "chmod 700 /var/lib/etcd"
@@ -1108,6 +1123,7 @@ type MasterSecurityEnhancemenAction struct {
 }
 
 func (k *MasterSecurityEnhancemenAction) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] MasterSecurityEnhancemenAction(k8s)")
 	// Control-plane Security Enhancemen
 	chmodKubernetesDirCmd := "chmod 644 /etc/kubernetes"
 	chownKubernetesDirCmd := "chown root:root /etc/kubernetes"
@@ -1170,6 +1186,7 @@ type NodesSecurityEnhancemenAction struct {
 }
 
 func (n *NodesSecurityEnhancemenAction) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] NodesSecurityEnhancemenAction(k8s)")
 	// Control-plane Security Enhancemen
 	chmodKubernetesDirCmd := "chmod 644 /etc/kubernetes"
 	chownKubernetesDirCmd := "chown root:root /etc/kubernetes"

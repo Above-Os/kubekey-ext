@@ -388,6 +388,7 @@ type SyncKubeConfigToWorker struct {
 }
 
 func (s *SyncKubeConfigToWorker) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncKubeConfigToWorker(k8e)")
 	if v, ok := s.PipelineCache.Get(common.ClusterStatus); ok {
 		cluster := v.(*K8eStatus)
 
@@ -440,6 +441,7 @@ type ExecUninstallScript struct {
 }
 
 func (e *ExecUninstallScript) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ExecUninstallScript(k8e)")
 	if _, err := runtime.GetRunner().SudoCmd("systemctl daemon-reload && /usr/local/bin/k8e-killall.sh",
 		true); err != nil {
 		return errors.Wrap(errors.WithStack(err), "add master NoSchedule taint failed")
@@ -456,6 +458,7 @@ type SaveKubeConfig struct {
 }
 
 func (s *SaveKubeConfig) Execute(_ connector.Runtime) error {
+	fmt.Println("[action] SaveKubeConfig(k8e)")
 	status, ok := s.PipelineCache.Get(common.ClusterStatus)
 	if !ok {
 		return errors.New("get kubernetes status failed by pipeline cache")
