@@ -33,4 +33,5 @@ type Module interface {
 	AutoAssert()
 	AppendPostHook(h PostHookInterface)
 	CallPostHook(result *ending.ModuleResult) error
+	GetName() string
 }

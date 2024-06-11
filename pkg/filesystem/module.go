@@ -26,6 +26,10 @@ type ChownModule struct {
 	module.BaseTaskModule
 }
 
+func (c *ChownModule) GetName() string {
+	return "ChownModule"
+}
+
 func (c *ChownModule) Init() {
 	c.Name = "ChownModule"
 	c.Desc = "Change file and dir mode and owner"
@@ -47,6 +51,10 @@ type ChownWorkDirModule struct {
 	module.BaseTaskModule
 }
 
+func (c *ChownWorkDirModule) GetName() string {
+	return "ChownWorkDirModule"
+}
+
 func (c *ChownWorkDirModule) Init() {
 	c.Name = "ChownWorkerModule"
 	c.Desc = "Change kubekey work dir mode and owner"
@@ -64,6 +72,10 @@ func (c *ChownWorkDirModule) Init() {
 
 type ChownOutputModule struct {
 	common.ArtifactModule
+}
+
+func (c *ChownOutputModule) GetName() string {
+	return "ChownOutputModule"
 }
 
 func (c *ChownOutputModule) Init() {

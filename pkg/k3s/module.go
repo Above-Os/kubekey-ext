@@ -31,6 +31,10 @@ type StatusModule struct {
 	common.KubeModule
 }
 
+func (s *StatusModule) GetName() string {
+	return "StatusModule"
+}
+
 func (s *StatusModule) Init() {
 	s.Name = "StatusModule"
 	s.Desc = "Get cluster status"
@@ -55,6 +59,10 @@ type InstallKubeBinariesModule struct {
 	common.KubeModule
 }
 
+func (i *InstallKubeBinariesModule) GetName() string {
+	return "InstallKubeBinariesModule"
+}
+
 func (i *InstallKubeBinariesModule) Init() {
 	i.Name = "InstallKubeBinariesModule"
 	i.Desc = "Install k3s cluster"
@@ -75,6 +83,7 @@ func (i *InstallKubeBinariesModule) Init() {
 		Hosts:   i.Runtime.GetHostsByRole(common.K8s),
 		Prepare: &NodeInCluster{Not: true},
 		Action: &action.Template{
+			Name:     "GenerateK3sKillAllScript",
 			Template: templates.K3sKillallScript,
 			Dst:      filepath.Join("/usr/local/bin", templates.K3sKillallScript.Name()),
 		},
@@ -88,6 +97,7 @@ func (i *InstallKubeBinariesModule) Init() {
 		Hosts:   i.Runtime.GetHostsByRole(common.K8s),
 		Prepare: &NodeInCluster{Not: true},
 		Action: &action.Template{
+			Name:     "GenerateK3sUninstallScript",
 			Template: templates.K3sUninstallScript,
 			Dst:      filepath.Join("/usr/local/bin", templates.K3sUninstallScript.Name()),
 		},
@@ -115,6 +125,10 @@ func (i *InstallKubeBinariesModule) Init() {
 
 type InitClusterModule struct {
 	common.KubeModule
+}
+
+func (i *InitClusterModule) GetName() string {
+	return "InitClusterModule"
 }
 
 func (i *InitClusterModule) Init() {
@@ -168,6 +182,8 @@ func (i *InitClusterModule) Init() {
 		},
 		Action:   new(EnableK3sService),
 		Parallel: true,
+		Retry:    200, // ! add retries for enable k3s
+		Delay:    10 * time.Second,
 	}
 
 	copyKubeConfig := &task.RemoteTask{
@@ -341,6 +357,10 @@ func (j *JoinNodesModule) Init() {
 
 type DeleteClusterModule struct {
 	common.KubeModule
+}
+
+func (d *DeleteClusterModule) GetName() string {
+	return "DeleteClusterModule"
 }
 
 func (d *DeleteClusterModule) Init() {

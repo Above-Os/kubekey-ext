@@ -27,6 +27,10 @@ type UpgradeNodesModule struct {
 	common.KubeModule
 }
 
+func (p *UpgradeNodesModule) GetName() string {
+	return "UpgradeNodesModule"
+}
+
 func (p *UpgradeNodesModule) Init() {
 	p.Name = "UpgradeNodesModule"
 	p.Desc = "Upgrade cluster on all nodes"

@@ -19,6 +19,12 @@ package certs
 import (
 	"encoding/base64"
 	"fmt"
+	"os"
+	"path/filepath"
+	"strings"
+	"text/tabwriter"
+	"time"
+
 	"github.com/kubesphere/kubekey/pkg/certs/templates"
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
@@ -29,11 +35,6 @@ import (
 	clientcmdapi "k8s.io/client-go/tools/clientcmd/api"
 	clientcmdlatest "k8s.io/client-go/tools/clientcmd/api/latest"
 	certutil "k8s.io/client-go/util/cert"
-	"os"
-	"path/filepath"
-	"strings"
-	"text/tabwriter"
-	"time"
 )
 
 type Certificate struct {
@@ -378,6 +379,7 @@ type EnableRenewService struct {
 }
 
 func (e *EnableRenewService) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] EnableRenewService")
 	if _, err := runtime.GetRunner().SudoCmd(
 		"chmod +x /usr/local/bin/kube-scripts/k8s-certs-renew.sh && systemctl enable --now k8s-certs-renew.timer",
 		false); err != nil {

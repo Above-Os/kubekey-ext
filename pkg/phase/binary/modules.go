@@ -26,6 +26,10 @@ type SyncBinaryModule struct {
 	common.KubeModule
 }
 
+func (p *SyncBinaryModule) GetName() string {
+	return "SyncBinaryModule"
+}
+
 func (p *SyncBinaryModule) Init() {
 	p.Name = "SyncBinaryModule"
 	p.Desc = "synchronize kubernetes binaries"

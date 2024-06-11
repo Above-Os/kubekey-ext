@@ -67,6 +67,7 @@ func (p *Pipeline) Init() error {
 }
 
 func (p *Pipeline) Start() error {
+	fmt.Println("[pipeline start] Start ...")
 	if err := p.Init(); err != nil {
 		return errors.Wrapf(err, "Pipeline[%s] execute failed", p.Name)
 	}
@@ -75,7 +76,8 @@ func (p *Pipeline) Start() error {
 		if m.IsSkip() {
 			continue
 		}
-
+		logger.Log.Infof("[run module] module: %s", m.GetName())
+		fmt.Println("[pipeline run] module:", m.GetName())
 		moduleCache := p.newModuleCache()
 		m.Default(p.Runtime, p.PipelineCache, moduleCache)
 		m.AutoAssert()

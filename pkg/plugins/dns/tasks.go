@@ -17,14 +17,15 @@
 package dns
 
 import (
+	"path/filepath"
+	"strings"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/kubesphere/kubekey/pkg/plugins/dns/templates"
 	"github.com/pkg/errors"
-	"path/filepath"
-	"strings"
 )
 
 type OverrideCoreDNS struct {
@@ -70,6 +71,7 @@ func (g *GenerateNodeLocalDNSConfigMap) Execute(runtime connector.Runtime) error
 	}
 
 	templateAction := action.Template{
+		Name:     "GenerateNodeLocalDNSConfigMap",
 		Template: templates.NodeLocalDNSConfigMap,
 		Dst:      filepath.Join(common.KubeConfigDir, templates.NodeLocalDNSConfigMap.Name()),
 		Data: util.Data{

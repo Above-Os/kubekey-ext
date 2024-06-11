@@ -42,6 +42,7 @@ type AddInstallerConfig struct {
 }
 
 func (a *AddInstallerConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddInstallerConfig")
 	configurationBase64 := base64.StdEncoding.EncodeToString([]byte(a.KubeConf.Cluster.KubeSphere.Configurations))
 	if _, err := runtime.GetRunner().SudoCmd(
 		fmt.Sprintf("echo %s | base64 -d >> /etc/kubernetes/addons/kubesphere.yaml", configurationBase64),
@@ -56,6 +57,7 @@ type CreateNamespace struct {
 }
 
 func (c *CreateNamespace) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] CreateNamespace")
 	_, err := runtime.GetRunner().SudoCmd(`cat <<EOF | /usr/local/bin/kubectl apply -f -
 apiVersion: v1
 kind: Namespace
@@ -79,6 +81,7 @@ type Setup struct {
 }
 
 func (s *Setup) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] Setup")
 	filePath := filepath.Join(common.KubeAddonsDir, templates.KsInstaller.Name())
 
 	var addrList []string
@@ -234,6 +237,7 @@ type Apply struct {
 }
 
 func (a *Apply) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] Apply")
 	filePath := filepath.Join(common.KubeAddonsDir, templates.KsInstaller.Name())
 
 	deployKubesphereCmd := fmt.Sprintf("/usr/local/bin/kubectl apply -f %s --force", filePath)
@@ -252,7 +256,7 @@ func (c *Check) Execute(runtime connector.Runtime) error {
 	// 	position = 1
 	// 	notes    = "Please wait for the installation to complete: "
 	// )
-
+	fmt.Println("[action] Check")
 	ch := make(chan string)
 	ctx, cancel := context.WithCancel(context.Background())
 	defer cancel()
@@ -383,6 +387,7 @@ type CleanCC struct {
 }
 
 func (c *CleanCC) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] CleanCC")
 	c.KubeConf.Cluster.KubeSphere.Configurations = "\n"
 	return nil
 }
@@ -392,6 +397,7 @@ type ConvertV2ToV3 struct {
 }
 
 func (c *ConvertV2ToV3) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ConvertV2ToV3")
 	configV2Str, err := runtime.GetRunner().SudoCmd(
 		"/usr/local/bin/kubectl get cm -n kubesphere-system ks-installer -o jsonpath='{.data.ks-config\\.yaml}'",
 		false)

@@ -28,6 +28,10 @@ type UpgradeImagesModule struct {
 	common.KubeModule
 }
 
+func (p *UpgradeImagesModule) GetName() string {
+	return "UpgradeImagesModule"
+}
+
 func (p *UpgradeImagesModule) Init() {
 	p.Name = "UpgradeImagesModule"
 	p.Desc = "pull the images that cluster need"
@@ -48,6 +52,10 @@ func (p *UpgradeImagesModule) Init() {
 
 type setBinaryCacheModule struct {
 	common.KubeModule
+}
+
+func (p *setBinaryCacheModule) GetName() string {
+	return "setBinaryCacheModule"
 }
 
 func (p *setBinaryCacheModule) Init() {

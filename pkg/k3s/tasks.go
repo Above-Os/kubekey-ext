@@ -48,6 +48,7 @@ type GetClusterStatus struct {
 }
 
 func (g *GetClusterStatus) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GetClusterStatus")
 	exist, err := runtime.GetRunner().FileExist("/etc/systemd/system/k3s.service")
 	if err != nil {
 		return err
@@ -92,6 +93,7 @@ type SyncKubeBinary struct {
 }
 
 func (s *SyncKubeBinary) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncKubeBinary")
 	binariesMapObj, ok := s.PipelineCache.Get(common.KubeBinaries + "-" + runtime.RemoteHost().GetArch())
 	if !ok {
 		return errors.New("get KubeBinary by pipeline cache failed")
@@ -121,6 +123,7 @@ func SyncKubeBinaries(runtime connector.Runtime, binariesMap map[string]*files.K
 		switch name {
 		case "kubecni":
 			dst := filepath.Join(common.TmpDir, fileName)
+			fmt.Printf("[action] SyncKubeBinary cp %s from %s to %s\n", name, binary.Path(), dst)
 			if err := runtime.GetRunner().Scp(binary.Path(), dst); err != nil {
 				return errors.Wrap(errors.WithStack(err), fmt.Sprintf("sync kube binaries failed"))
 			}
@@ -129,6 +132,7 @@ func SyncKubeBinaries(runtime connector.Runtime, binariesMap map[string]*files.K
 			}
 		default:
 			dst := filepath.Join(common.BinDir, fileName)
+			fmt.Printf("[action] SyncKubeBinary cp %s from %s to %s\n", name, binary.Path(), dst)
 			if err := runtime.GetRunner().SudoScp(binary.Path(), dst); err != nil {
 				return errors.Wrap(errors.WithStack(err), fmt.Sprintf("sync kube binaries failed"))
 			}
@@ -155,6 +159,7 @@ type ChmodScript struct {
 }
 
 func (c *ChmodScript) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ChmodScript")
 	killAllScript := filepath.Join("/usr/local/bin", templates.K3sKillallScript.Name())
 	uninstallScript := filepath.Join("/usr/local/bin", templates.K3sUninstallScript.Name())
 
@@ -174,6 +179,7 @@ type GenerateK3sService struct {
 }
 
 func (g *GenerateK3sService) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateK3sService")
 	host := runtime.RemoteHost()
 
 	var server string
@@ -203,6 +209,7 @@ func (g *GenerateK3sService) Execute(runtime connector.Runtime) error {
 	kubeProxyArgs, _ := util.GetArgs(defaultKubeProxyArgs, g.KubeConf.Cluster.Kubernetes.KubeProxyArgs)
 
 	templateAction := action.Template{
+		Name:     "GenerateK3sService",
 		Template: templates.K3sService,
 		Dst:      filepath.Join("/etc/systemd/system/", templates.K3sService.Name()),
 		Data: util.Data{
@@ -229,6 +236,7 @@ func (g *GenerateK3sService) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction = action.Template{
+		Name:     "K3sKubeletConfig",
 		Template: templates.K3sKubeletConfig,
 		Dst:      filepath.Join("/etc/rancher/k3s/", templates.K3sKubeletConfig.Name()),
 		Data: util.Data{
@@ -249,6 +257,7 @@ type GenerateK3sServiceEnv struct {
 }
 
 func (g *GenerateK3sServiceEnv) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateK3sServiceEnv")
 	host := runtime.RemoteHost()
 
 	clusterStatus, ok := g.PipelineCache.Get(common.ClusterStatus)
@@ -295,6 +304,7 @@ func (g *GenerateK3sServiceEnv) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction := action.Template{
+		Name:     "K3sServiceEnv",
 		Template: templates.K3sServiceEnv,
 		Dst:      filepath.Join("/etc/systemd/system/", templates.K3sServiceEnv.Name()),
 		Data: util.Data{
@@ -319,6 +329,7 @@ type EnableK3sService struct {
 }
 
 func (e *EnableK3sService) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] EnableK3sService")
 	if _, err := runtime.GetRunner().SudoCmd("systemctl daemon-reload && systemctl enable --now k3s",
 		false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "enable k3s failed")
@@ -331,6 +342,7 @@ type CopyK3sKubeConfig struct {
 }
 
 func (c *CopyK3sKubeConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] CopyK3sKubeConfig")
 	createConfigDirCmd := "mkdir -p /root/.kube && mkdir -p $HOME/.kube"
 	getKubeConfigCmd := "cp -f /etc/rancher/k3s/k3s.yaml /root/.kube/config"
 
@@ -371,6 +383,7 @@ type AddMasterTaint struct {
 }
 
 func (a *AddMasterTaint) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddMasterTaint")
 	host := runtime.RemoteHost()
 
 	cmd := fmt.Sprintf(
@@ -388,15 +401,19 @@ type AddWorkerLabel struct {
 }
 
 func (a *AddWorkerLabel) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddWorkerLabel")
 	host := runtime.RemoteHost()
 
 	cmd := fmt.Sprintf(
 		"/usr/local/bin/kubectl label --overwrite node %s node-role.kubernetes.io/worker=",
 		host.GetName())
 
-	if _, err := runtime.GetRunner().SudoCmd(cmd, false); err != nil {
+	var out string
+	var err error
+	if out, err = runtime.GetRunner().SudoCmd(cmd, false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "add master NoSchedule taint failed")
 	}
+	fmt.Printf("[action] AddWorkerLabel successed: %s\n", out)
 	return nil
 }
 
@@ -405,6 +422,7 @@ type SyncKubeConfigToWorker struct {
 }
 
 func (s *SyncKubeConfigToWorker) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncKubeConfigToWorker")
 	if v, ok := s.PipelineCache.Get(common.ClusterStatus); ok {
 		cluster := v.(*K3sStatus)
 
@@ -473,6 +491,7 @@ type SaveKubeConfig struct {
 }
 
 func (s *SaveKubeConfig) Execute(_ connector.Runtime) error {
+	fmt.Println("[action] SaveKubeConfig")
 	status, ok := s.PipelineCache.Get(common.ClusterStatus)
 	if !ok {
 		return errors.New("get kubernetes status failed by pipeline cache")
@@ -532,6 +551,7 @@ type GenerateK3sRegistryConfig struct {
 }
 
 func (g *GenerateK3sRegistryConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateK3sRegistryConfig")
 	dockerioMirror := registry.Mirror{}
 	registryConfigs := map[string]registry.RegistryConfig{}
 
@@ -572,6 +592,7 @@ func (g *GenerateK3sRegistryConfig) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction := action.Template{
+		Name:     "K3sRegistryConfigTempl",
 		Template: templates.K3sRegistryConfigTempl,
 		Dst:      filepath.Join("/etc/rancher/k3s", templates.K3sRegistryConfigTempl.Name()),
 		Data: util.Data{

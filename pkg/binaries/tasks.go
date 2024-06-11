@@ -66,6 +66,7 @@ type K3sDownload struct {
 }
 
 func (k *K3sDownload) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] K3sDownload")
 	cfg := k.KubeConf.Cluster
 
 	var kubeVersion string

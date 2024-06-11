@@ -38,6 +38,10 @@ type InstallContainerModule struct {
 	Skip bool
 }
 
+func (i *InstallContainerModule) GetName() string {
+	return "InstallContainerModule"
+}
+
 func (i *InstallContainerModule) IsSkip() bool {
 	return i.Skip
 }
@@ -83,6 +87,7 @@ func InstallDocker(m *InstallContainerModule) []task.Interface {
 			&DockerExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateDockerService",
 			Template: templates.DockerService,
 			Dst:      filepath.Join("/etc/systemd/system", templates.DockerService.Name()),
 		},
@@ -98,6 +103,7 @@ func InstallDocker(m *InstallContainerModule) []task.Interface {
 			&DockerExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateDockerConfig",
 			Template: templates.DockerConfig,
 			Dst:      filepath.Join("/etc/docker/", templates.DockerConfig.Name()),
 			Data: util.Data{
@@ -179,6 +185,7 @@ func InstallContainerd(m *InstallContainerModule) []task.Interface {
 			&ContainerdExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateContainerdService",
 			Template: templates.ContainerdService,
 			Dst:      filepath.Join("/etc/systemd/system", templates.ContainerdService.Name()),
 		},
@@ -194,6 +201,7 @@ func InstallContainerd(m *InstallContainerModule) []task.Interface {
 			&ContainerdExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateContainerdConfig",
 			Template: templates.ContainerdConfig,
 			Dst:      filepath.Join("/etc/containerd/", templates.ContainerdConfig.Name()),
 			Data: util.Data{
@@ -216,6 +224,7 @@ func InstallContainerd(m *InstallContainerModule) []task.Interface {
 			&ContainerdExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateCrictlConfig",
 			Template: templates.CrictlConfig,
 			Dst:      filepath.Join("/etc/", templates.CrictlConfig.Name()),
 			Data: util.Data{
@@ -250,6 +259,10 @@ func InstallContainerd(m *InstallContainerModule) []task.Interface {
 type UninstallContainerModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (i *UninstallContainerModule) GetName() string {
+	return "UninstallContainerModule"
 }
 
 func (i *UninstallContainerModule) IsSkip() bool {
@@ -313,6 +326,10 @@ type CriMigrateModule struct {
 	common.KubeModule
 
 	Skip bool
+}
+
+func (i *CriMigrateModule) GetName() string {
+	return "CriMigrateModule"
 }
 
 func (i *CriMigrateModule) IsSkip() bool {

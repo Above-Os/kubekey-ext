@@ -122,6 +122,7 @@ type UnArchive struct {
 }
 
 func (u *UnArchive) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] UnArchive")
 	if err := coreutil.Untar(u.KubeConf.Arg.Artifact, runtime.GetWorkDir()); err != nil {
 		return errors.Wrapf(errors.WithStack(err), "unArchive %s failed", u.KubeConf.Arg.Artifact)
 	}
@@ -133,6 +134,7 @@ type Md5Check struct {
 }
 
 func (m *Md5Check) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] Md5Check")
 	m.ModuleCache.Set("md5AreEqual", false)
 
 	// check if there is a md5.sum file. This file's content contains the last artifact md5 value.
@@ -159,6 +161,7 @@ type CreateMd5File struct {
 }
 
 func (c *CreateMd5File) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] CreateMd5File")
 	oldFile := filepath.Join(runtime.GetWorkDir(), "artifact.md5")
 	newMd5 := coreutil.LocalMd5Sum(c.KubeConf.Arg.Artifact)
 	f, err := os.Create(oldFile)

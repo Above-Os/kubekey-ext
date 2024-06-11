@@ -14,6 +14,9 @@
 package plugins
 
 import (
+	"path/filepath"
+	"text/template"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
@@ -22,8 +25,6 @@ import (
 	"github.com/kubesphere/kubekey/pkg/images"
 	"github.com/lithammer/dedent"
 	"github.com/pkg/errors"
-	"path/filepath"
-	"text/template"
 )
 
 // NodeFeatureDiscovery detects hardware features available on each node in a Kubernetes cluster, and advertises those
@@ -663,6 +664,7 @@ func DeployNodeFeatureDiscoveryTasks(d *DeployPluginsModule) []task.Interface {
 		Hosts:   d.Runtime.GetHostsByRole(common.Master),
 		Prepare: new(common.OnlyFirstMaster),
 		Action: &action.Template{
+			Name:     "GenerateNFDManifests",
 			Template: NodeFeatureDiscovery,
 			Data: util.Data{
 				"NFDImage": images.GetImage(d.Runtime, d.KubeConf, "node-feature-discovery").ImageName(),

@@ -36,6 +36,10 @@ type StatusModule struct {
 	common.KubeModule
 }
 
+func (k *StatusModule) GetName() string {
+	return "StatusModule"
+}
+
 func (k *StatusModule) Init() {
 	k.Name = "KubernetesStatusModule"
 	k.Desc = "Get kubernetes cluster status"
@@ -59,6 +63,10 @@ func (k *StatusModule) Init() {
 
 type InstallKubeBinariesModule struct {
 	common.KubeModule
+}
+
+func (i *InstallKubeBinariesModule) GetName() string {
+	return "InstallKubeBinariesModule"
 }
 
 func (i *InstallKubeBinariesModule) Init() {
@@ -91,6 +99,7 @@ func (i *InstallKubeBinariesModule) Init() {
 		Hosts:   i.Runtime.GetHostsByRole(common.K8s),
 		Prepare: &NodeInCluster{Not: true},
 		Action: &action.Template{
+			Name:     "GenerateKubeletService",
 			Template: templates.KubeletService,
 			Dst:      filepath.Join("/etc/systemd/system/", templates.KubeletService.Name()),
 		},
@@ -129,6 +138,10 @@ func (i *InstallKubeBinariesModule) Init() {
 
 type InitKubernetesModule struct {
 	common.KubeModule
+}
+
+func (i *InitKubernetesModule) GetName() string {
+	return "InitKubernetesModule"
 }
 
 func (i *InitKubernetesModule) Init() {
@@ -214,6 +227,10 @@ func (i *InitKubernetesModule) Init() {
 
 type JoinNodesModule struct {
 	common.KubeModule
+}
+
+func (j *JoinNodesModule) GetName() string {
+	return "JoinNodesModule"
 }
 
 func (j *JoinNodesModule) Init() {
@@ -341,6 +358,10 @@ type ResetClusterModule struct {
 	common.KubeModule
 }
 
+func (r *ResetClusterModule) GetName() string {
+	return "ResetClusterModule"
+}
+
 func (r *ResetClusterModule) Init() {
 	r.Name = "ResetClusterModule"
 	r.Desc = "Reset kubernetes cluster"
@@ -362,6 +383,10 @@ type CompareConfigAndClusterInfoModule struct {
 	common.KubeModule
 }
 
+func (c *CompareConfigAndClusterInfoModule) GetName() string {
+	return "CompareConfigAndClusterInfoModule"
+}
+
 func (c *CompareConfigAndClusterInfoModule) Init() {
 	c.Name = "CompareConfigAndClusterInfoModule"
 	c.Desc = "Compare config and cluster nodes info"
@@ -381,6 +406,10 @@ func (c *CompareConfigAndClusterInfoModule) Init() {
 
 type DeleteKubeNodeModule struct {
 	common.KubeModule
+}
+
+func (d *DeleteKubeNodeModule) GetName() string {
+	return "DeleteKubeNodeModule"
 }
 
 func (d *DeleteKubeNodeModule) Init() {
@@ -416,6 +445,10 @@ type SetUpgradePlanModule struct {
 	Step UpgradeStep
 }
 
+func (s *SetUpgradePlanModule) GetName() string {
+	return "SetUpgradePlanModule"
+}
+
 func (s *SetUpgradePlanModule) Init() {
 	s.Name = fmt.Sprintf("SetUpgradePlanModule %d/%d", s.Step, len(UpgradeStepList))
 	s.Desc = "Set upgrade plan"
@@ -434,6 +467,10 @@ func (s *SetUpgradePlanModule) Init() {
 type ProgressiveUpgradeModule struct {
 	common.KubeModule
 	Step UpgradeStep
+}
+
+func (p *ProgressiveUpgradeModule) GetName() string {
+	return "ProgressiveUpgradeModule"
 }
 
 func (p *ProgressiveUpgradeModule) Init() {
@@ -566,6 +603,10 @@ type SaveKubeConfigModule struct {
 	common.KubeModule
 }
 
+func (s *SaveKubeConfigModule) GetName() string {
+	return "SaveKubeConfigModule"
+}
+
 func (s *SaveKubeConfigModule) Init() {
 	s.Name = "SaveKubeConfigModule"
 	s.Desc = "Save kube config file as a configmap"
@@ -584,6 +625,10 @@ func (s *SaveKubeConfigModule) Init() {
 
 type ConfigureKubernetesModule struct {
 	common.KubeModule
+}
+
+func (c *ConfigureKubernetesModule) GetName() string {
+	return "ConfigureKubernetesModule"
 }
 
 func (c *ConfigureKubernetesModule) Init() {
@@ -608,6 +653,10 @@ func (c *ConfigureKubernetesModule) Init() {
 type SecurityEnhancementModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (s *SecurityEnhancementModule) GetName() string {
+	return "SecurityEnhancementModule"
 }
 
 func (s *SecurityEnhancementModule) IsSkip() bool {

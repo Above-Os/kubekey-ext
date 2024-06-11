@@ -178,7 +178,6 @@ func NewK3sCreateClusterPipeline(runtime *common.KubeRuntime) error {
 		&k3s.StatusModule{},
 		&k3s.JoinNodesModule{},
 		&images.CopyImagesToRegistryModule{Skip: skipPushImages},
-		// &images.PullModule{Skip: runtime.Arg.SkipPullImages}, // todo need to fix
 		&loadbalancer.K3sHaproxyModule{Skip: !runtime.Cluster.ControlPlaneEndpoint.IsInternalLBEnabled()},
 		&network.DeployNetworkPluginModule{},
 		&kubernetes.ConfigureKubernetesModule{},

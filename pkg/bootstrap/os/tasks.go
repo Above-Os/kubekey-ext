@@ -35,7 +35,7 @@ type NodeConfigureOS struct {
 }
 
 func (n *NodeConfigureOS) Execute(runtime connector.Runtime) error {
-
+	fmt.Println("[action] NodeConfigureOS")
 	host := runtime.RemoteHost()
 	if err := addUsers(runtime, host); err != nil {
 		return errors.Wrap(errors.WithStack(err), "Failed to add users")
@@ -122,6 +122,7 @@ type NodeExecScript struct {
 }
 
 func (n *NodeExecScript) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] NodeExecScript")
 	if _, err := runtime.GetRunner().SudoCmd(fmt.Sprintf("chmod +x %s/initOS.sh", common.KubeScriptDir), false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "Failed to chmod +x init os script")
 	}
@@ -259,6 +260,7 @@ type GetOSData struct {
 }
 
 func (g *GetOSData) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GetOSData")
 	osReleaseStr, err := runtime.GetRunner().SudoCmd("cat /etc/os-release", false)
 	if err != nil {
 		return err
@@ -276,6 +278,7 @@ type SyncRepositoryFile struct {
 }
 
 func (s *SyncRepositoryFile) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncRepositoryFile")
 	if err := utils.ResetTmpDir(runtime); err != nil {
 		return errors.Wrap(err, "reset tmp dir failed")
 	}
@@ -303,6 +306,7 @@ type MountISO struct {
 }
 
 func (m *MountISO) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] MountISO")
 	mountPath := filepath.Join(common.TmpDir, "iso")
 	if err := runtime.GetRunner().MkDir(mountPath); err != nil {
 		return errors.Wrapf(errors.WithStack(err), "create mount dir failed")
@@ -323,6 +327,7 @@ type NewRepoClient struct {
 }
 
 func (n *NewRepoClient) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] NewRepoClient")
 	host := runtime.RemoteHost()
 	release, ok := host.GetCache().Get(Release)
 	if !ok {
@@ -357,6 +362,7 @@ type BackupOriginalRepository struct {
 }
 
 func (b *BackupOriginalRepository) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] BackupOriginalRepository")
 	host := runtime.RemoteHost()
 	r, ok := host.GetCache().Get("repo")
 	if !ok {
@@ -376,6 +382,7 @@ type AddLocalRepository struct {
 }
 
 func (a *AddLocalRepository) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] AddLocalRepository")
 	host := runtime.RemoteHost()
 	r, ok := host.GetCache().Get("repo")
 	if !ok {
@@ -398,6 +405,7 @@ type InstallPackage struct {
 }
 
 func (i *InstallPackage) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] InstallPackage")
 	host := runtime.RemoteHost()
 	repo, ok := host.GetCache().Get("repo")
 	if !ok {
@@ -423,6 +431,7 @@ type ResetRepository struct {
 }
 
 func (r *ResetRepository) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ResetRepository")
 	host := runtime.RemoteHost()
 	repo, ok := host.GetCache().Get("repo")
 	if !ok {
@@ -451,6 +460,7 @@ type UmountISO struct {
 }
 
 func (u *UmountISO) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] UmountISO")
 	mountPath := filepath.Join(common.TmpDir, "iso")
 	umountCmd := fmt.Sprintf("umount %s", mountPath)
 	if _, err := runtime.GetRunner().SudoCmd(umountCmd, false); err != nil {
@@ -464,7 +474,7 @@ type NodeConfigureNtpServer struct {
 }
 
 func (n *NodeConfigureNtpServer) Execute(runtime connector.Runtime) error {
-
+	fmt.Println("[action] NodeConfigureNtpServer")
 	currentHost := runtime.RemoteHost()
 	release, ok := currentHost.GetCache().Get(Release)
 	if !ok {

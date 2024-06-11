@@ -186,6 +186,7 @@ type GenerateKubeletEnv struct {
 func (g *GenerateKubeletEnv) Execute(runtime connector.Runtime) error {
 	host := runtime.RemoteHost()
 	templateAction := action.Template{
+		Name:     "GenerateKubeletEnv",
 		Template: templates.KubeletEnv,
 		Dst:      filepath.Join("/etc/systemd/system/kubelet.service.d", templates.KubeletEnv.Name()),
 		Data: util.Data{
@@ -273,6 +274,7 @@ func (g *GenerateKubeadmConfig) Execute(runtime connector.Runtime) error {
 		}
 
 		templateAction := action.Template{
+			Name:     "GenerateKubeadmConfig",
 			Template: v1beta2.KubeadmConfig,
 			Dst:      filepath.Join(common.KubeConfigDir, v1beta2.KubeadmConfig.Name()),
 			Data: util.Data{
@@ -1061,6 +1063,7 @@ type ConfigureKubernetes struct {
 }
 
 func (c *ConfigureKubernetes) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ConfigureKubernetes")
 	host := runtime.RemoteHost()
 	kubeHost := host.(*kubekeyv1alpha2.KubeHost)
 	for k, v := range kubeHost.Labels {

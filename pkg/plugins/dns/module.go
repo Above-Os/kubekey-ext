@@ -17,6 +17,8 @@
 package dns
 
 import (
+	"path/filepath"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/prepare"
@@ -24,11 +26,14 @@ import (
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/kubesphere/kubekey/pkg/images"
 	"github.com/kubesphere/kubekey/pkg/plugins/dns/templates"
-	"path/filepath"
 )
 
 type ClusterDNSModule struct {
 	common.KubeModule
+}
+
+func (c *ClusterDNSModule) GetName() string {
+	return "ClusterDNSModule"
 }
 
 func (c *ClusterDNSModule) Init() {
@@ -44,6 +49,7 @@ func (c *ClusterDNSModule) Init() {
 			&CoreDNSExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateCoreDNSSvc",
 			Template: templates.CorednsService,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.CorednsService.Name()),
 			Data: util.Data{
@@ -74,6 +80,7 @@ func (c *ClusterDNSModule) Init() {
 			new(EnableNodeLocalDNS),
 		},
 		Action: &action.Template{
+			Name:     "GenerateNodeLocalDNS",
 			Template: templates.NodeLocalDNSService,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.NodeLocalDNSService.Name()),
 			Data: util.Data{

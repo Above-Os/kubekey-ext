@@ -42,6 +42,7 @@ type ReleaseCiliumChart struct {
 }
 
 func (r *ReleaseCiliumChart) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ReleaseCiliumChart")
 	fs, err := os.Create(fmt.Sprintf("%s/cilium.tgz", runtime.GetWorkDir()))
 	if err != nil {
 		return err
@@ -65,6 +66,7 @@ type SyncCiliumChart struct {
 }
 
 func (s *SyncCiliumChart) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncCiliumChart")
 	src := filepath.Join(runtime.GetWorkDir(), "cilium.tgz")
 	dst := filepath.Join(common.TmpDir, "cilium.tgz")
 	if err := runtime.GetRunner().Scp(src, dst); err != nil {
@@ -81,6 +83,7 @@ type DeployCilium struct {
 }
 
 func (d *DeployCilium) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] DeployCilium")
 	ciliumImage := images.GetImage(runtime, d.KubeConf, "cilium").ImageName()
 	ciliumOperatorImage := images.GetImage(runtime, d.KubeConf, "cilium-operator-generic").ImageName()
 
@@ -105,6 +108,7 @@ type DeployNetworkPlugin struct {
 }
 
 func (d *DeployNetworkPlugin) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] DeployNetworkPlugin")
 	if _, err := runtime.GetRunner().SudoCmd(
 		"/usr/local/bin/kubectl apply -f /etc/kubernetes/network-plugin.yaml --force", true); err != nil {
 		return errors.Wrap(errors.WithStack(err), "deploy network plugin failed")
@@ -117,6 +121,7 @@ type DeployKubeovnPlugin struct {
 }
 
 func (d *DeployKubeovnPlugin) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] DeployKubeovnPlugin")
 	if _, err := runtime.GetRunner().SudoCmd(
 		"/usr/local/bin/kubectl apply -f /etc/kubernetes/kube-ovn-crd.yaml --force", true); err != nil {
 		return errors.Wrap(errors.WithStack(err), "deploy kube-ovn-crd.yaml failed")
@@ -149,6 +154,7 @@ type LabelNode struct {
 }
 
 func (l *LabelNode) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] LabelNode")
 	if _, err := runtime.GetRunner().SudoCmd(
 		fmt.Sprintf("/usr/local/bin/kubectl label no -l%s kube-ovn/role=master --overwrite",
 			l.KubeConf.Cluster.Network.Kubeovn.Label),
@@ -163,6 +169,7 @@ type GenerateSSL struct {
 }
 
 func (g *GenerateSSL) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateSSL")
 	if exist, err := runtime.GetRunner().SudoCmd(
 		"/usr/local/bin/kubectl get secret -n kube-system kube-ovn-tls --ignore-not-found",
 		true); err != nil {
@@ -203,6 +210,7 @@ type GenerateKubeOVN struct {
 }
 
 func (g *GenerateKubeOVN) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateKubeOVN")
 	address, err := runtime.GetRunner().Cmd(
 		"/usr/local/bin/kubectl get no -lkube-ovn/role=master --no-headers -o wide | awk '{print $6}' | tr \\\\n ','",
 		true)
@@ -222,6 +230,7 @@ func (g *GenerateKubeOVN) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction := action.Template{
+		Name:     "GenerateKubeOVNCrd",
 		Template: templates.KubeOvnCrd,
 		Dst:      filepath.Join(common.KubeConfigDir, templates.KubeOvnCrd.Name()),
 	}
@@ -231,6 +240,7 @@ func (g *GenerateKubeOVN) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction = action.Template{
+		Name:     "GenerateOVN",
 		Template: templates.OVN,
 		Dst:      filepath.Join(common.KubeConfigDir, templates.OVN.Name()),
 		Data: util.Data{
@@ -252,6 +262,7 @@ func (g *GenerateKubeOVN) Execute(runtime connector.Runtime) error {
 	}
 
 	templateAction = action.Template{
+		Name:     "GenerateKubeOVN",
 		Template: templates.KubeOvn,
 		Dst:      filepath.Join(common.KubeConfigDir, templates.KubeOvn.Name()),
 		Data: util.Data{
@@ -299,6 +310,7 @@ type ChmodKubectlKo struct {
 }
 
 func (c *ChmodKubectlKo) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ChmodKubectlKo")
 	if _, err := runtime.GetRunner().SudoCmd(
 		fmt.Sprintf("chmod +x %s", filepath.Join(common.BinDir, templates.KubectlKo.Name())), false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "chmod +x kubectl-ko failed")

@@ -30,6 +30,10 @@ type StatusModule struct {
 	common.KubeModule
 }
 
+func (s *StatusModule) GetName() string {
+	return "StatusModule"
+}
+
 func (s *StatusModule) Init() {
 	s.Name = "StatusModule"
 	s.Desc = "Get cluster status"
@@ -52,6 +56,10 @@ func (s *StatusModule) Init() {
 
 type InstallKubeBinariesModule struct {
 	common.KubeModule
+}
+
+func (i *InstallKubeBinariesModule) GetName() string {
+	return "InstallKubeBinariesModule"
 }
 
 func (i *InstallKubeBinariesModule) Init() {
@@ -114,6 +122,10 @@ func (i *InstallKubeBinariesModule) Init() {
 
 type InitClusterModule struct {
 	common.KubeModule
+}
+
+func (i *InitClusterModule) GetName() string {
+	return "InitClusterModule"
 }
 
 func (i *InitClusterModule) Init() {
@@ -208,6 +220,10 @@ func (i *InitClusterModule) Init() {
 
 type JoinNodesModule struct {
 	common.KubeModule
+}
+
+func (j *JoinNodesModule) GetName() string {
+	return "JoinNodesModule"
 }
 
 func (j *JoinNodesModule) Init() {
@@ -311,6 +327,10 @@ type DeleteClusterModule struct {
 	common.KubeModule
 }
 
+func (d *DeleteClusterModule) GetName() string {
+	return "DeleteClusterModule"
+}
+
 func (d *DeleteClusterModule) Init() {
 	d.Name = "DeleteClusterModule"
 	d.Desc = "Delete k8e cluster"
@@ -330,6 +350,10 @@ func (d *DeleteClusterModule) Init() {
 
 type SaveKubeConfigModule struct {
 	common.KubeModule
+}
+
+func (s *SaveKubeConfigModule) GetName() string {
+	return "SaveKubeConfigModule"
 }
 
 func (s *SaveKubeConfigModule) Init() {

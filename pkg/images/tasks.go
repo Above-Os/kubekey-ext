@@ -166,6 +166,7 @@ func (s *SaveImages) Execute(runtime connector.Runtime) error {
 			if variant != "" {
 				variant = "-" + variant
 			}
+
 			// Ex:
 			// oci:./kubekey/artifact/images:kubesphere:kube-apiserver-amd64:v1.21.5
 			// oci:./kubekey/artifact/images:kubesphere:kube-apiserver-arm-v7:v1.21.5
@@ -210,6 +211,7 @@ type CopyImagesToRegistry struct {
 }
 
 func (c *CopyImagesToRegistry) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] CopyImagesToRegistry")
 	var imagesPath string
 	if c.ImagesPath != "" {
 		imagesPath = c.ImagesPath
@@ -311,6 +313,7 @@ type PushManifest struct {
 func (p *PushManifest) Execute(_ connector.Runtime) error {
 	// make a multi-arch image
 	// push a manifest list to the private registry.
+	fmt.Println("[action] PushManifest")
 
 	v, ok := p.ModuleCache.Get("manifestList")
 	if !ok {

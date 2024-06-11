@@ -34,6 +34,10 @@ type BaseModule struct {
 	PostHook      []PostHookInterface
 }
 
+func (b *BaseModule) GetName() string {
+	return "BaseModule"
+}
+
 func (b *BaseModule) IsSkip() bool {
 	return b.Skip
 }

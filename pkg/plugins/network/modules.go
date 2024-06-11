@@ -34,6 +34,10 @@ type DeployNetworkPluginModule struct {
 	common.KubeModule
 }
 
+func (d *DeployNetworkPluginModule) GetName() string {
+	return "DeployNetworkPluginModule"
+}
+
 func (d *DeployNetworkPluginModule) Init() {
 	d.Name = "DeployNetworkPluginModule"
 	d.Desc = "Deploy cluster network plugin"
@@ -65,6 +69,7 @@ func deployMultus(d *DeployNetworkPluginModule) []task.Interface {
 			&OldK8sVersion{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateMultus",
 			Template: templates.Multus,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.Multus.Name()),
 			Data: util.Data{
@@ -98,6 +103,7 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 			new(OldK8sVersion),
 		},
 		Action: &action.Template{
+			Name:     "GenerateCalicoOld",
 			Template: templates.CalicoOld,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.CalicoOld.Name()),
 			Data: util.Data{
@@ -125,6 +131,7 @@ func deployCalico(d *DeployNetworkPluginModule) []task.Interface {
 			&OldK8sVersion{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateCalicoNew",
 			Template: templates.CalicoNew,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.CalicoNew.Name()),
 			Data: util.Data{
@@ -175,6 +182,7 @@ func deployFlannel(d *DeployNetworkPluginModule) []task.Interface {
 		Hosts:   d.Runtime.GetHostsByRole(common.Master),
 		Prepare: new(common.OnlyFirstMaster),
 		Action: &action.Template{
+			Name:     "GenerateFlannel",
 			Template: templates.Flannel,
 			Dst:      filepath.Join(common.KubeConfigDir, templates.Flannel.Name()),
 			Data: util.Data{

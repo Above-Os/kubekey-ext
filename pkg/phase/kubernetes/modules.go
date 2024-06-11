@@ -14,6 +14,10 @@ type InstallKubeletModule struct {
 	common.KubeModule
 }
 
+func (i *InstallKubeletModule) GetName() string {
+	return "InstallKubeletModule"
+}
+
 func (i *InstallKubeletModule) Init() {
 	i.Name = "InstallKubeletModule"
 	i.Desc = "Install kubernetes cluster"
@@ -34,6 +38,7 @@ func (i *InstallKubeletModule) Init() {
 		Hosts:   i.Runtime.GetHostsByRole(common.K8s),
 		Prepare: &kubernetes.NodeInCluster{Not: true},
 		Action: &action.Template{
+			Name:     "GenerateKubeletService",
 			Template: templates.KubeletService,
 			Dst:      filepath.Join("/etc/systemd/system/", templates.KubeletService.Name()),
 		},

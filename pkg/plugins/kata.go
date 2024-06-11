@@ -14,6 +14,9 @@
 package plugins
 
 import (
+	"path/filepath"
+	"text/template"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
@@ -22,8 +25,6 @@ import (
 	"github.com/kubesphere/kubekey/pkg/images"
 	"github.com/lithammer/dedent"
 	"github.com/pkg/errors"
-	"path/filepath"
-	"text/template"
 )
 
 // Kata Containers is an open source community working to build a secure container runtime with lightweight virtual
@@ -169,6 +170,7 @@ func DeployKataTasks(d *DeployPluginsModule) []task.Interface {
 		Hosts:   d.Runtime.GetHostsByRole(common.Master),
 		Prepare: new(common.OnlyFirstMaster),
 		Action: &action.Template{
+			Name:     "GenerateKataDeployManifests",
 			Template: KataDeploy,
 			Data: util.Data{
 				"KataDeployImage": images.GetImage(d.Runtime, d.KubeConf, "kata-deploy").ImageName(),

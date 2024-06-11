@@ -34,6 +34,10 @@ type CheckCertsModule struct {
 	common.KubeModule
 }
 
+func (c *CheckCertsModule) GetName() string {
+	return "CheckCertsModule"
+}
+
 func (c *CheckCertsModule) Init() {
 	c.Name = "CheckCertsModule"
 	c.Desc = "Check cluster certs"
@@ -55,6 +59,10 @@ type PrintClusterCertsModule struct {
 	common.KubeModule
 }
 
+func (p *PrintClusterCertsModule) GetName() string {
+	return "PrintClusterCertsModule"
+}
+
 func (p *PrintClusterCertsModule) Init() {
 	p.Name = "PrintClusterCertsModule"
 	p.Desc = "Display cluster certs form"
@@ -72,6 +80,10 @@ func (p *PrintClusterCertsModule) Init() {
 
 type RenewCertsModule struct {
 	common.KubeModule
+}
+
+func (r *RenewCertsModule) GetName() string {
+	return "RenewCertsModule"
 }
 
 func (r *RenewCertsModule) Init() {
@@ -130,6 +142,10 @@ type AutoRenewCertsModule struct {
 	Skip bool
 }
 
+func (a *AutoRenewCertsModule) GetName() string {
+	return "AutoRenewCertsModule"
+}
+
 func (a *AutoRenewCertsModule) IsSkip() bool {
 	return a.Skip
 }
@@ -143,6 +159,7 @@ func (a *AutoRenewCertsModule) Init() {
 		Desc:  "Generate k8s certs renew script",
 		Hosts: a.Runtime.GetHostsByRole(common.Master),
 		Action: &action.Template{
+			Name:     "GenerateK8sCertsRenewScript",
 			Template: templates.K8sCertsRenewScript,
 			Dst:      filepath.Join("/usr/local/bin/kube-scripts/", templates.K8sCertsRenewScript.Name()),
 			Data: util.Data{
@@ -169,6 +186,7 @@ func (a *AutoRenewCertsModule) Init() {
 		Desc:  "Generate k8s certs renew timer",
 		Hosts: a.Runtime.GetHostsByRole(common.Master),
 		Action: &action.Template{
+			Name:     "GenerateK8sCertsRenewTimer",
 			Template: templates.K8sCertsRenewTimer,
 			Dst:      filepath.Join("/etc/systemd/system/", templates.K8sCertsRenewTimer.Name()),
 		},
@@ -193,6 +211,10 @@ func (a *AutoRenewCertsModule) Init() {
 
 type UninstallAutoRenewCertsModule struct {
 	common.KubeModule
+}
+
+func (u *UninstallAutoRenewCertsModule) GetName() string {
+	return "UninstallAutoRenewCertsModule"
 }
 
 func (u *UninstallAutoRenewCertsModule) Init() {

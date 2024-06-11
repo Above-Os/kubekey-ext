@@ -19,20 +19,21 @@ package etcd
 import (
 	"crypto/x509"
 	"fmt"
+	"io/ioutil"
+	"net"
+	"os"
+	"path/filepath"
+	"strings"
+
 	kubekeyapiv1alpha2 "github.com/kubesphere/kubekey/apis/kubekey/v1alpha2"
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/kubesphere/kubekey/pkg/utils/certs"
 	"github.com/pkg/errors"
-	"io/ioutil"
 	"k8s.io/client-go/util/cert"
 	certutil "k8s.io/client-go/util/cert"
 	netutils "k8s.io/utils/net"
-	"net"
-	"os"
-	"path/filepath"
-	"strings"
 )
 
 // KubekeyCertEtcdCA is the definition of the root CA used by the hosted etcd server.
@@ -108,6 +109,7 @@ type FetchCerts struct {
 }
 
 func (f *FetchCerts) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] FetchCerts")
 	src := "/etc/ssl/etcd/ssl"
 	dst := fmt.Sprintf("%s/pki/etcd", runtime.GetWorkDir())
 
@@ -142,6 +144,7 @@ type GenerateCerts struct {
 }
 
 func (g *GenerateCerts) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateCerts")
 
 	pkiPath := fmt.Sprintf("%s/pki/etcd", runtime.GetWorkDir())
 
@@ -219,7 +222,7 @@ type FetchCertsForExternalEtcd struct {
 }
 
 func (f *FetchCertsForExternalEtcd) Execute(runtime connector.Runtime) error {
-
+	fmt.Println("[action] FetchCertsForExternalEtcd")
 	pkiPath := fmt.Sprintf("%s/pki/etcd", runtime.GetWorkDir())
 
 	if err := util.CreateDir(pkiPath); err != nil {

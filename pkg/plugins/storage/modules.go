@@ -17,6 +17,8 @@
 package storage
 
 import (
+	"path/filepath"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/prepare"
@@ -24,12 +26,15 @@ import (
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/kubesphere/kubekey/pkg/images"
 	"github.com/kubesphere/kubekey/pkg/plugins/storage/templates"
-	"path/filepath"
 )
 
 type DeployLocalVolumeModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (d *DeployLocalVolumeModule) GetName() string {
+	return "DeployLocalVolumeModule"
 }
 
 func (d *DeployLocalVolumeModule) IsSkip() bool {
@@ -49,6 +54,7 @@ func (d *DeployLocalVolumeModule) Init() {
 			new(CheckDefaultStorageClass),
 		},
 		Action: &action.Template{
+			Name:     "GenerateOpenEBSManifest",
 			Template: templates.OpenEBS,
 			Dst:      filepath.Join(common.KubeAddonsDir, templates.OpenEBS.Name()),
 			Data: util.Data{

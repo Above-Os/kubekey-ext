@@ -18,21 +18,24 @@ package action
 
 import (
 	"fmt"
+	"path/filepath"
+	"text/template"
+
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/pkg/errors"
-	"path/filepath"
-	"text/template"
 )
 
 type Template struct {
 	BaseAction
+	Name     string
 	Template *template.Template
 	Dst      string
 	Data     util.Data
 }
 
 func (t *Template) Execute(runtime connector.Runtime) error {
+	fmt.Printf("[action] Template: %s\n", t.Name)
 	templateStr, err := util.Render(t.Template, t.Data)
 	if err != nil {
 		return errors.Wrap(errors.WithStack(err), fmt.Sprintf("render template %s failed", t.Template.Name()))

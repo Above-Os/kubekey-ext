@@ -59,6 +59,7 @@ type GetStatus struct {
 }
 
 func (g *GetStatus) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GetStatus")
 	exist, err := runtime.GetRunner().FileExist("/etc/etcd.env")
 	if err != nil {
 		return err
@@ -111,6 +112,7 @@ type SyncCertsFile struct {
 }
 
 func (s *SyncCertsFile) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncCertsFile")
 	localCertsDir, ok := s.ModuleCache.Get(LocalCertsDir)
 	if !ok {
 		return errors.New("get etcd local certs dir by module cache failed")
@@ -136,6 +138,7 @@ type InstallETCDBinary struct {
 }
 
 func (g *InstallETCDBinary) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] InstallETCDBinary")
 	if err := utils.ResetTmpDir(runtime); err != nil {
 		return err
 	}
@@ -168,6 +171,7 @@ type GenerateAccessAddress struct {
 }
 
 func (g *GenerateAccessAddress) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateAccessAddress")
 	var addrList []string
 	for _, host := range runtime.GetHostsByRole(common.ETCD) {
 		addrList = append(addrList, fmt.Sprintf("https://%s:2379", host.GetInternalAddress()))
@@ -189,6 +193,7 @@ type HealthCheck struct {
 }
 
 func (h *HealthCheck) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] HealthCheck")
 	if v, ok := h.PipelineCache.Get(common.ETCDCluster); ok {
 		cluster := v.(*EtcdCluster)
 		if err := healthCheck(runtime, cluster); err != nil {
@@ -219,6 +224,7 @@ type GenerateConfig struct {
 }
 
 func (g *GenerateConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GenerateConfig")
 	host := runtime.RemoteHost()
 	etcdName, ok := host.GetCache().GetMustString(common.ETCDName)
 	if !ok {
@@ -252,6 +258,7 @@ type RefreshConfig struct {
 }
 
 func (r *RefreshConfig) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] RefreshConfig")
 	host := runtime.RemoteHost()
 	etcdName, ok := host.GetCache().GetMustString(common.ETCDName)
 	if !ok {
@@ -291,6 +298,7 @@ func refreshConfig(runtime connector.Runtime, endpoints []string, state, etcdNam
 	}
 
 	templateAction := action.Template{
+		Name:     "refreshConfig",
 		Template: templates.EtcdEnv,
 		Dst:      filepath.Join("/etc/", templates.EtcdEnv.Name()),
 		Data: util.Data{
@@ -373,6 +381,7 @@ type RestartETCD struct {
 }
 
 func (r *RestartETCD) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] RestartETCD")
 	if _, err := runtime.GetRunner().SudoCmd("systemctl daemon-reload && systemctl restart etcd && systemctl enable etcd", true); err != nil {
 		return errors.Wrap(errors.WithStack(err), "start etcd failed")
 	}
@@ -384,7 +393,9 @@ type BackupETCD struct {
 }
 
 func (b *BackupETCD) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] BackupETCD")
 	templateAction := action.Template{
+		Name:     "backupETCD",
 		Template: templates.EtcdBackupScript,
 		Dst:      filepath.Join(b.KubeConf.Cluster.Etcd.BackupScriptDir, "etcd-backup.sh"),
 		Data: util.Data{
@@ -412,6 +423,7 @@ type EnableBackupETCDService struct {
 }
 
 func (e *EnableBackupETCDService) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] EnableBackupETCDService")
 	if _, err := runtime.GetRunner().SudoCmd("systemctl enable --now backup-etcd.timer",
 		false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "enable backup-etcd.service failed")

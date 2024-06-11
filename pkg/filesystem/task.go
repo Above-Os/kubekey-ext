@@ -18,11 +18,12 @@ package filesystem
 
 import (
 	"fmt"
+	"os/exec"
+
 	"github.com/kubesphere/kubekey/pkg/core/action"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/kubesphere/kubekey/pkg/core/util"
 	"github.com/pkg/errors"
-	"os/exec"
 )
 
 type ChownFileAndDir struct {
@@ -31,6 +32,7 @@ type ChownFileAndDir struct {
 }
 
 func (c *ChownFileAndDir) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] ChownFileAndDir")
 	exist, err := runtime.GetRunner().FileExist(c.Path)
 	if err != nil {
 		return errors.Wrapf(errors.WithStack(err), "get user %s failed", c.Path)

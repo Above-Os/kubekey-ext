@@ -35,6 +35,10 @@ type RegistryCertsModule struct {
 	Skip bool
 }
 
+func (p *RegistryCertsModule) GetName() string {
+	return "RegistryCertsModule"
+}
+
 func (p *RegistryCertsModule) IsSkip() bool {
 	return p.Skip
 }
@@ -89,6 +93,10 @@ type InstallRegistryModule struct {
 	common.KubeModule
 }
 
+func (i *InstallRegistryModule) GetName() string {
+	return "InstallRegistryModule"
+}
+
 func (i *InstallRegistryModule) Init() {
 	i.Name = "InstallRegistryModule"
 	i.Desc = "Install local registry"
@@ -116,6 +124,7 @@ func InstallRegistry(i *InstallRegistryModule) []task.Interface {
 		Desc:  "Generate registry service",
 		Hosts: i.Runtime.GetHostsByRole(common.Registry),
 		Action: &action.Template{
+			Name:     "GenerateRegistryService",
 			Template: templates.RegistryServiceTempl,
 			Dst:      "/etc/systemd/system/registry.service",
 		},
@@ -128,6 +137,7 @@ func InstallRegistry(i *InstallRegistryModule) []task.Interface {
 		Desc:  "Generate registry config",
 		Hosts: i.Runtime.GetHostsByRole(common.Registry),
 		Action: &action.Template{
+			Name:     "GenerateRegistryConfig",
 			Template: templates.RegistryConfigTempl,
 			Dst:      "/etc/kubekey/registry/config.yaml",
 			Data: util.Data{
@@ -178,6 +188,7 @@ func InstallHarbor(i *InstallRegistryModule) []task.Interface {
 			&container.DockerExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateDockerService",
 			Template: docker_template.DockerService,
 			Dst:      filepath.Join("/etc/systemd/system", docker_template.DockerService.Name()),
 		},
@@ -192,6 +203,7 @@ func InstallHarbor(i *InstallRegistryModule) []task.Interface {
 			&container.DockerExist{Not: true},
 		},
 		Action: &action.Template{
+			Name:     "GenerateDockerConfig",
 			Template: docker_template.DockerConfig,
 			Dst:      filepath.Join("/etc/docker/", docker_template.DockerConfig.Name()),
 			Data: util.Data{
@@ -239,6 +251,7 @@ func InstallHarbor(i *InstallRegistryModule) []task.Interface {
 		Desc:  "Generate harbor service",
 		Hosts: i.Runtime.GetHostsByRole(common.Registry),
 		Action: &action.Template{
+			Name:     "GenerateHarborService",
 			Template: templates.HarborServiceTempl,
 			Dst:      "/etc/systemd/system/harbor.service",
 			Data: util.Data{
@@ -254,6 +267,7 @@ func InstallHarbor(i *InstallRegistryModule) []task.Interface {
 		Desc:  "Generate harbor config",
 		Hosts: i.Runtime.GetHostsByRole(common.Registry),
 		Action: &action.Template{
+			Name:     "GenerateHarborConfig",
 			Template: templates.HarborConfigTempl,
 			Dst:      "/opt/harbor/harbor.yml",
 			Data: util.Data{

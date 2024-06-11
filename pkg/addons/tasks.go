@@ -18,10 +18,11 @@ package addons
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/kubesphere/kubekey/pkg/core/logger"
-	"path/filepath"
 )
 
 type Install struct {
@@ -29,6 +30,7 @@ type Install struct {
 }
 
 func (i *Install) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] Install")
 	nums := len(i.KubeConf.Cluster.Addons)
 	for index, addon := range i.KubeConf.Cluster.Addons {
 		logger.Log.Messagef(runtime.RemoteHost().GetName(), "Install addon [%v-%v]: %s", nums, index, addon.Name)

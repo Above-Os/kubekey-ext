@@ -29,6 +29,10 @@ type GreetingsModule struct {
 	module.BaseTaskModule
 }
 
+func (h *GreetingsModule) GetName() string {
+	return "GreetingsModule"
+}
+
 func (h *GreetingsModule) Init() {
 	h.Name = "GreetingsModule"
 	h.Desc = "Greetings"
@@ -55,6 +59,10 @@ func (h *GreetingsModule) Init() {
 type NodePreCheckModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (n *NodePreCheckModule) GetName() string {
+	return "NodePreCheckModule"
 }
 
 func (n *NodePreCheckModule) IsSkip() bool {
@@ -88,6 +96,10 @@ func (n *NodePreCheckModule) Init() {
 
 type ClusterPreCheckModule struct {
 	common.KubeModule
+}
+
+func (c *ClusterPreCheckModule) GetName() string {
+	return "ClusterPreCheckModule"
 }
 
 func (c *ClusterPreCheckModule) Init() {

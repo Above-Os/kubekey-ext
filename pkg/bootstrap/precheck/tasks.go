@@ -37,6 +37,7 @@ type GreetingsTask struct {
 }
 
 func (h *GreetingsTask) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] GreetingsTask")
 	hello, err := runtime.GetRunner().SudoCmd("echo 'Greetings, KubeKey!'", false)
 	if err != nil {
 		return err

@@ -18,10 +18,11 @@ package storage
 
 import (
 	"fmt"
+	"path/filepath"
+
 	"github.com/kubesphere/kubekey/pkg/common"
 	"github.com/kubesphere/kubekey/pkg/core/connector"
 	"github.com/pkg/errors"
-	"path/filepath"
 )
 
 type DeployLocalVolume struct {
@@ -29,6 +30,7 @@ type DeployLocalVolume struct {
 }
 
 func (d *DeployLocalVolume) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] DeployLocalVolume")
 	cmd := fmt.Sprintf("/usr/local/bin/kubectl apply -f %s", filepath.Join(common.KubeAddonsDir, "local-volume.yaml"))
 	if _, err := runtime.GetRunner().SudoCmd(cmd, false); err != nil {
 		return errors.Wrap(errors.WithStack(err), "deploy local-volume.yaml failed")

@@ -17,6 +17,9 @@
 package images
 
 import (
+	"os"
+	"path/filepath"
+
 	"github.com/kubesphere/kubekey/cmd/ctl/options"
 	"github.com/kubesphere/kubekey/cmd/ctl/util"
 	"github.com/kubesphere/kubekey/pkg/artifact"
@@ -28,8 +31,6 @@ import (
 	"github.com/kubesphere/kubekey/pkg/images"
 	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
-	"os"
-	"path/filepath"
 )
 
 type ArtifactImagesPushOptions struct {

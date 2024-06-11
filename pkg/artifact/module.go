@@ -25,6 +25,10 @@ type RepositoryModule struct {
 	common.ArtifactModule
 }
 
+func (r *RepositoryModule) GetName() string {
+	return "RepositoryModule"
+}
+
 func (r *RepositoryModule) Init() {
 	r.Name = "RepositoryModule"
 	r.Desc = "Get OS repository ISO file"
@@ -52,6 +56,10 @@ type ArchiveModule struct {
 	common.ArtifactModule
 }
 
+func (a *ArchiveModule) GetName() string {
+	return "ArchiveModule"
+}
+
 func (a *ArchiveModule) Init() {
 	a.Name = "ArtifactArchiveModule"
 	a.Desc = "Archive the dependencies"
@@ -70,6 +78,10 @@ func (a *ArchiveModule) Init() {
 type UnArchiveModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (u *UnArchiveModule) GetName() string {
+	return "UnArchiveModule"
 }
 
 func (u *UnArchiveModule) IsSkip() bool {

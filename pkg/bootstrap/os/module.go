@@ -31,6 +31,10 @@ type ConfigureOSModule struct {
 	common.KubeModule
 }
 
+func (c *ConfigureOSModule) GetName() string {
+	return "ConfigureOSModule"
+}
+
 func (c *ConfigureOSModule) Init() {
 	c.Name = "ConfigureOSModule"
 	c.Desc = "Init os dependencies"
@@ -56,6 +60,7 @@ func (c *ConfigureOSModule) Init() {
 		Desc:  "Generate init os script",
 		Hosts: c.Runtime.GetAllHosts(),
 		Action: &action.Template{
+			Name:     "GenerateScript",
 			Template: templates.InitOsScriptTmpl,
 			Dst:      filepath.Join(common.KubeScriptDir, "initOS.sh"),
 			Data: util.Data{
@@ -93,6 +98,10 @@ func (c *ConfigureOSModule) Init() {
 
 type ClearNodeOSModule struct {
 	common.KubeModule
+}
+
+func (c *ClearNodeOSModule) GetName() string {
+	return "ClearNodeOSModule"
 }
 
 func (c *ClearNodeOSModule) Init() {
@@ -134,6 +143,10 @@ func (c *ClearNodeOSModule) Init() {
 
 type ClearOSEnvironmentModule struct {
 	common.KubeModule
+}
+
+func (c *ClearOSEnvironmentModule) GetName() string {
+	return "ClearOSEnvironmentModule"
 }
 
 func (c *ClearOSEnvironmentModule) Init() {
@@ -187,6 +200,10 @@ type RepositoryOnlineModule struct {
 	Skip bool
 }
 
+func (r *RepositoryOnlineModule) GetName() string {
+	return "RepositoryOnlineModule"
+}
+
 func (r *RepositoryOnlineModule) IsSkip() bool {
 	return r.Skip
 }
@@ -230,6 +247,10 @@ func (r *RepositoryOnlineModule) Init() {
 type RepositoryModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (r *RepositoryModule) GetName() string {
+	return "RepositoryModule"
 }
 
 func (r *RepositoryModule) IsSkip() bool {

@@ -9,6 +9,10 @@ type UpgradeK8sConfirmModule struct {
 	common.KubeModule
 }
 
+func (u *UpgradeK8sConfirmModule) GetName() string {
+	return "UpgradeK8sConfirmModule"
+}
+
 func (u *UpgradeK8sConfirmModule) Init() {
 	u.Name = "UpgradeKsConfirmModule"
 	u.Desc = "Display upgrade kubesphere confirmation form"
@@ -26,6 +30,10 @@ func (u *UpgradeK8sConfirmModule) Init() {
 
 type UpgradeKsConfirmModule struct {
 	common.KubeModule
+}
+
+func (u *UpgradeKsConfirmModule) GetName() string {
+	return "UpgradeKsConfirmModule"
 }
 
 func (u *UpgradeKsConfirmModule) Init() {
@@ -47,6 +55,10 @@ type CreateK8sConfirmModule struct {
 	common.KubeModule
 }
 
+func (u *CreateK8sConfirmModule) GetName() string {
+	return "CreateK8sConfirmModule"
+}
+
 func (u *CreateK8sConfirmModule) Init() {
 	u.Name = "CreateKsConfirmModule"
 	u.Desc = "Display Create kubesphere confirmation form"
@@ -64,6 +76,10 @@ func (u *CreateK8sConfirmModule) Init() {
 
 type CreateKsConfirmModule struct {
 	common.KubeModule
+}
+
+func (u *CreateKsConfirmModule) GetName() string {
+	return "CreateKsConfirmModule"
 }
 
 func (u *CreateKsConfirmModule) Init() {

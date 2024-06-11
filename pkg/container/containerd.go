@@ -41,6 +41,7 @@ type SyncContainerd struct {
 }
 
 func (s *SyncContainerd) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncContainerd")
 	if err := utils.ResetTmpDir(runtime); err != nil {
 		return err
 	}
@@ -74,6 +75,7 @@ type SyncCrictlBinaries struct {
 }
 
 func (s *SyncCrictlBinaries) Execute(runtime connector.Runtime) error {
+	fmt.Println("[action] SyncCrictlBinaries")
 	if err := utils.ResetTmpDir(runtime); err != nil {
 		return err
 	}
@@ -366,6 +368,7 @@ func MigrateSelfNodeCriTasks(runtime connector.Runtime, kubeAction common.KubeAc
 				&DockerExist{Not: true},
 			},
 			Action: &action.Template{
+				Name:     "GenerateDockerService",
 				Template: templates.DockerService,
 				Dst:      filepath.Join("/etc/systemd/system", templates.DockerService.Name()),
 			},
@@ -380,6 +383,7 @@ func MigrateSelfNodeCriTasks(runtime connector.Runtime, kubeAction common.KubeAc
 				&DockerExist{Not: true},
 			},
 			Action: &action.Template{
+				Name:     "GenerateDockerConfig",
 				Template: templates.DockerConfig,
 				Dst:      filepath.Join("/etc/docker/", templates.DockerConfig.Name()),
 				Data: util.Data{
@@ -448,6 +452,7 @@ func MigrateSelfNodeCriTasks(runtime connector.Runtime, kubeAction common.KubeAc
 				&ContainerdExist{Not: true},
 			},
 			Action: &action.Template{
+				Name:     "GenerateContainerdService",
 				Template: templates.ContainerdService,
 				Dst:      filepath.Join("/etc/systemd/system", templates.ContainerdService.Name()),
 			},
@@ -462,6 +467,7 @@ func MigrateSelfNodeCriTasks(runtime connector.Runtime, kubeAction common.KubeAc
 				&ContainerdExist{Not: true},
 			},
 			Action: &action.Template{
+				Name:     "GenerateContainerdConfig",
 				Template: templates.ContainerdConfig,
 				Dst:      filepath.Join("/etc/containerd/", templates.ContainerdConfig.Name()),
 				Data: util.Data{
@@ -483,6 +489,7 @@ func MigrateSelfNodeCriTasks(runtime connector.Runtime, kubeAction common.KubeAc
 				&ContainerdExist{Not: true},
 			},
 			Action: &action.Template{
+				Name:     "GenerateCrictlConfig",
 				Template: templates.CrictlConfig,
 				Dst:      filepath.Join("/etc/", templates.CrictlConfig.Name()),
 				Data: util.Data{

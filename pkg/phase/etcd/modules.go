@@ -12,6 +12,10 @@ type PreCheckModule struct {
 	Skip bool
 }
 
+func (p *PreCheckModule) GetName() string {
+	return "PreCheckModule"
+}
+
 func (p *PreCheckModule) IsSkip() bool {
 	return p.Skip
 }

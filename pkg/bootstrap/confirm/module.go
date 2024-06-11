@@ -27,6 +27,10 @@ type InstallConfirmModule struct {
 	Skip bool
 }
 
+func (i *InstallConfirmModule) GetName() string {
+	return "InstallConfirmModule"
+}
+
 func (i *InstallConfirmModule) IsSkip() bool {
 	return i.Skip
 }
@@ -50,6 +54,10 @@ type DeleteClusterConfirmModule struct {
 	common.KubeModule
 }
 
+func (d *DeleteClusterConfirmModule) GetName() string {
+	return "DeleteClusterConfirmModule"
+}
+
 func (d *DeleteClusterConfirmModule) Init() {
 	d.Name = "DeleteClusterConfirmModule"
 	d.Desc = "Display delete confirmation form"
@@ -67,6 +75,10 @@ func (d *DeleteClusterConfirmModule) Init() {
 
 type DeleteNodeConfirmModule struct {
 	common.KubeModule
+}
+
+func (d *DeleteNodeConfirmModule) GetName() string {
+	return "DeleteNodeConfirmModule"
 }
 
 func (d *DeleteNodeConfirmModule) Init() {
@@ -87,6 +99,10 @@ func (d *DeleteNodeConfirmModule) Init() {
 type UpgradeConfirmModule struct {
 	common.KubeModule
 	Skip bool
+}
+
+func (u *UpgradeConfirmModule) GetName() string {
+	return "UpgradeConfirmModule"
 }
 
 func (u *UpgradeConfirmModule) IsSkip() bool {
@@ -113,6 +129,10 @@ type CheckFileExistModule struct {
 	FileName string
 }
 
+func (c *CheckFileExistModule) GetName() string {
+	return "CheckFileExistModule"
+}
+
 func (c *CheckFileExistModule) Init() {
 	c.Name = "CheckFileExist"
 	c.Desc = "Check file if is existed"
@@ -130,6 +150,10 @@ func (c *CheckFileExistModule) Init() {
 
 type MigrateCriConfirmModule struct {
 	common.KubeModule
+}
+
+func (d *MigrateCriConfirmModule) GetName() string {
+	return "MigrateCriConfirmModule"
 }
 
 func (d *MigrateCriConfirmModule) Init() {
