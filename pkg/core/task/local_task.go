@@ -35,8 +35,9 @@ import (
 )
 
 type LocalTask struct {
-	Name     string
-	Desc     string
+	Name string
+	Desc string
+
 	Prepare  prepare.Prepare
 	Action   action.Action
 	Rollback rollback.Rollback

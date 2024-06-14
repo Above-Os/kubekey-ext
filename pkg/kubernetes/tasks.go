@@ -403,7 +403,6 @@ type AddWorkerLabel struct {
 }
 
 func (a *AddWorkerLabel) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] AddWorkerLabel(k8s)")
 	if _, err := runtime.GetRunner().SudoCmd(fmt.Sprintf(
 		"/usr/local/bin/kubectl label --overwrite node %s node-role.kubernetes.io/worker=",
 		runtime.RemoteHost().GetName()), true); err != nil {
@@ -1078,7 +1077,7 @@ type ConfigureKubernetes struct {
 }
 
 func (c *ConfigureKubernetes) Execute(runtime connector.Runtime) error {
-	fmt.Println("[action] ConfigureKubernetes(k8s)")
+	fmt.Println("[action] ConfigureKubernetes")
 	host := runtime.RemoteHost()
 	kubeHost := host.(*kubekeyv1alpha2.KubeHost)
 	for k, v := range kubeHost.Labels {
